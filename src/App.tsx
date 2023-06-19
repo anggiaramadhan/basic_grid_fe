@@ -1,56 +1,45 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useState } from "react";
+
+const initialColors: string[] = [
+  "#32a852",
+  "#c4632b",
+  "#d914c5",
+  "#c4ba2b",
+  "#cf1117",
+  "#1f2dc4",
+  "#1bebf2",
+  "#4a9676",
+  "#e3df07",
+];
 
 function App() {
-  const headerRef = useRef<HTMLElement | null>(null);
-  const contentRef = useRef<HTMLElement | null>(null);
-
-  const generateColor = ({ element }: { element: HTMLElement }) => {
-    const color = Math.floor(Math.random() * 16777215).toString(16);
-    element.style.backgroundColor = `#${color}`;
-  };
-
-  const headers = useMemo(() => {
-    if (!headerRef.current) return;
-    return headerRef.current.children as HTMLCollectionOf<HTMLElement>;
-  }, []);
-
-  const contents = useMemo(() => {
-    if (!contentRef.current) return;
-    return contentRef.current.children as HTMLCollectionOf<HTMLElement>;
-  }, []);
-
-  // initial colors for the items
-  useEffect(() => {
-    if (!headers) return;
-    if (!contents) return;
-
-    for (const element of headers) {
-      generateColor({ element });
-    }
-
-    for (const element of contents) {
-      generateColor({ element });
-    }
-  }, [contents, headers]);
+  const [colors, setColors] = useState<string[]>(initialColors);
 
   // handle click to generate random colors
   const handleOnclick = () => {
-    if (headers) {
-      for (const element of headers) {
-        generateColor({ element });
-      }
+    const newColors = [];
+    for (let i = 0; i < 9; i++) {
+      const color = Math.floor(Math.random() * 16777215).toString(16);
+      newColors.push(`#${color}`);
     }
-
-    if (contents) {
-      for (const element of contents) {
-        generateColor({ element });
-      }
-    }
+    setColors(newColors);
   };
 
-  const Card = ({ item, classname }: { item: number; classname: string }) => {
+  const Card = ({
+    item,
+    classname,
+    color,
+  }: {
+    item: number;
+    classname: string;
+    color: string;
+  }) => {
     return (
-      <div onClick={handleOnclick} className={`item ${classname}`}>
+      <div
+        style={{ backgroundColor: color }}
+        onClick={handleOnclick}
+        className={`item ${classname}`}
+      >
         {item}
       </div>
     );
@@ -58,18 +47,18 @@ function App() {
 
   return (
     <main className="container">
-      <section className="header" ref={headerRef}>
-        <Card item={1} classname="one" />
-        <Card item={2} classname="two" />
-        <Card item={3} classname="three" />
-        <Card item={4} classname="four" />
+      <section className="header">
+        <Card color={colors[0]} item={1} classname="one" />
+        <Card color={colors[1]} item={2} classname="two" />
+        <Card color={colors[2]} item={3} classname="three" />
+        <Card color={colors[3]} item={4} classname="four" />
       </section>
-      <section className="content" ref={contentRef}>
-        <Card item={5} classname="five" />
-        <Card item={6} classname="six" />
-        <Card item={7} classname="seven" />
-        <Card item={8} classname="eight" />
-        <Card item={9} classname="nine" />
+      <section className="content">
+        <Card color={colors[4]} item={5} classname="five" />
+        <Card color={colors[5]} item={6} classname="six" />
+        <Card color={colors[6]} item={7} classname="seven" />
+        <Card color={colors[7]} item={8} classname="eight" />
+        <Card color={colors[8]} item={9} classname="nine" />
       </section>
     </main>
   );
